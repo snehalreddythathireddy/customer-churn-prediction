@@ -122,24 +122,24 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 }
 
 .result-high {
-    background: linear-gradient(135deg, #ff000015, #ff000005);
-    border: 1px solid #ff000044;
+    background: linear-gradient(135deg, rgba(255,0,0,0.08), rgba(255,0,0,0.02));
+    border: 1px solid rgba(255,0,0,0.27);
     border-radius: 16px;
     padding: 32px;
     text-align: center;
 }
 
 .result-mid {
-    background: linear-gradient(135deg, #ff990015, #ff990005);
-    border: 1px solid #ff990044;
+    background: linear-gradient(135deg, rgba(255,153,0,0.08), rgba(255,153,0,0.02));
+    border: 1px solid rgba(255,153,0,0.27);
     border-radius: 16px;
     padding: 32px;
     text-align: center;
 }
 
 .result-low {
-    background: linear-gradient(135deg, #00ff8815, #00ff8805);
-    border: 1px solid #00ff8844;
+    background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.02));
+    border: 1px solid rgba(0,255,136,0.27);
     border-radius: 16px;
     padding: 32px;
     text-align: center;
@@ -300,9 +300,9 @@ if st.session_state.get("predict"):
                 'bar': {'color': color, 'thickness': 0.25},
                 'bgcolor': '#0a0a0f',
                 'steps': [
-                    {'range': [0, 40], 'color': '#00ff8815'},
-                    {'range': [40, 70], 'color': '#ffaa0015'},
-                    {'range': [70, 100], 'color': '#ff444415'},
+                    {'range': [0, 40], 'color': 'rgba(0, 255, 136, 0.08)'},
+                    {'range': [40, 70], 'color': 'rgba(255, 170, 0, 0.08)'},
+                    {'range': [70, 100], 'color': 'rgba(255, 68, 68, 0.08)'},
                 ],
                 'threshold': {
                     'line': {'color': color, 'width': 3},
