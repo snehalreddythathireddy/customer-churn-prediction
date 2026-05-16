@@ -63,4 +63,4 @@ Then run `01_eda.ipynb` first, followed by `02_model.ipynb`.
 ## 🛠️ Tech Stack
 - Python 3.13
 - Pandas 2.3.3 | XGBoost 3.2.0
-- Scikit-learn | SHAP | Seaborn | Matplotlib should i paste all this in readme
+- Scikit-learn | SHAP | Seaborn | Matplotlib 
