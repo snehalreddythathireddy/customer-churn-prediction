@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="ChurnSense AI",
@@ -29,11 +30,7 @@ html, body, [data-testid="stAppViewContainer"] {
 
 h1, h2, h3 { font-family: 'Syne', sans-serif; }
 
-.hero {
-    text-align: center;
-    padding: 60px 20px 40px;
-    position: relative;
-}
+.hero { text-align: center; padding: 60px 20px 40px; position: relative; }
 
 .hero-tag {
     display: inline-block;
@@ -166,15 +163,6 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     color: #ccc;
 }
 
-div[data-testid="stSlider"] > div { padding: 0; }
-
-.stSelectbox > div > div {
-    background: #ffffff08 !important;
-    border: 1px solid #ffffff15 !important;
-    border-radius: 8px !important;
-    color: #f0f0f0 !important;
-}
-
 label { color: #aaa !important; font-size: 13px !important; }
 
 .stButton > button {
@@ -194,7 +182,6 @@ label { color: #aaa !important; font-size: 13px !important; }
 }
 
 .stButton > button:hover { opacity: 0.85 !important; }
-
 hr { border-color: #ffffff10 !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -265,8 +252,6 @@ if st.session_state.get("predict"):
     input_df = pd.DataFrame([input_dict])
     prob = model.predict_proba(input_df)[0][1]
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
     if prob > 0.7:
         css_class = "result-high"
         emoji = "🔴"
@@ -299,3 +284,70 @@ if st.session_state.get("predict"):
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    chart_col1, chart_col2 = st.columns(2)
+
+    with chart_col1:
+        st.markdown('<div class="card"><div class="card-title">🎯 Churn Risk Gauge</div>', unsafe_allow_html=True)
+        gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=prob * 100,
+            number={'suffix': '%', 'font': {'size': 40, 'color': color, 'family': 'Syne'}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickcolor': '#444', 'tickfont': {'color': '#666'}},
+                'bar': {'color': color, 'thickness': 0.25},
+                'bgcolor': '#0a0a0f',
+                'bordercolor': '#ffffff10',
+                'steps': [
+                    {'range': [0, 40], 'color': '#00ff8815'},
+                    {'range': [40, 70], 'color': '#ffaa0015'},
+                    {'range': [70, 100], 'color': '#ff444415'},
+                ],
+                'threshold': {
+                    'line': {'color': color, 'width': 3},
+                    'thickness': 0.75,
+                    'value': prob * 100
+                }
+            }
+        ))
+        gauge.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font={'color': '#888'},
+            height=280,
+            margin=dict(t=20, b=20, l=30, r=30)
+        )
+        st.plotly_chart(gauge, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with chart_col2:
+        st.markdown('<div class="card"><div class="card-title">📊 Key Risk Factors</div>', unsafe_allow_html=True)
+        factors = {
+            'Tenure': round(1 - tenure/72, 2),
+            'Monthly Charges': round(monthly_charges/120, 2),
+            'Contract Risk': 1.0 if contract == "Month-to-month" else 0.3 if contract == "One year" else 0.05,
+            'Internet Service': 0.9 if internet_service == "Fiber optic" else 0.3 if internet_service == "DSL" else 0.05,
+            'Payment Method': 0.9 if payment_method == "Electronic check" else 0.3,
+            'Senior Citizen': 0.8 if senior_citizen == "Yes" else 0.1,
+        }
+        bar_colors = ['#ff4444' if v > 0.6 else '#ffaa00' if v > 0.3 else '#00ff88' for v in factors.values()]
+        fig = go.Figure(go.Bar(
+            x=list(factors.values()),
+            y=list(factors.keys()),
+            orientation='h',
+            marker_color=bar_colors,
+            marker_line_width=0,
+        ))
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(showgrid=False, zeroline=False, tickfont={'color': '#666'}, range=[0, 1]),
+            yaxis=dict(showgrid=False, tickfont={'color': '#aaa'}),
+            height=280,
+            margin=dict(t=10, b=10, l=10, r=10),
+            font={'color': '#888'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
