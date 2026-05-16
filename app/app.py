@@ -299,7 +299,6 @@ if st.session_state.get("predict"):
                 'axis': {'range': [0, 100], 'tickcolor': '#444', 'tickfont': {'color': '#666'}},
                 'bar': {'color': color, 'thickness': 0.25},
                 'bgcolor': '#0a0a0f',
-                'bordercolor': '#ffffff10',
                 'steps': [
                     {'range': [0, 40], 'color': '#00ff8815'},
                     {'range': [40, 70], 'color': '#ffaa0015'},
